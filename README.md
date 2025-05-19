@@ -103,7 +103,7 @@ curl -X POST "http://localhost:8000/chat" -d '{"query": "Show recent executive o
   ```
 
 ## Screenshots
-![alt text]([http://url/to/img.png](https://github.com/phani-x507/Retrieval-Augmented-Generation-using-Federal-Data-API/blob/main/Screenshots/scrsht1.png))
+![alt text](https://github.com/phani-x507/Retrieval-Augmented-Generation-using-Federal-Data-API/blob/main/Screenshots/scrsht1.png)
 
 
 ## Known Issues
