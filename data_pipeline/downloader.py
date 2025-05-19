@@ -4,6 +4,7 @@ import json
 from datetime import date
 
 async def download_data():
+    await asyncio.sleep(2)
     url = "https://www.federalregister.gov/api/v1/documents.json"
     params = {
         "per_page": 5,
@@ -18,4 +19,4 @@ async def download_data():
                 json.dump(data, f)
             print("Data downloaded successfully.")
 
-asyncio.run(download_data())
+# asyncio.run(download_data())

@@ -1,16 +1,3 @@
-# import asyncio
-# from data_pipeline.downloader import download_data
-# from data_pipeline.processor import process_data
-# from data_pipeline.db_updater import update_database
-
-# async def run_pipeline():
-#     print("Starting data pipeline...")
-#     await download_data()
-#     process_data()
-#     await update_database()
-#     print("Pipeline executed successfully.")
-
-# asyncio.run(run_pipeline())
 
 
 from fastapi import FastAPI
@@ -19,9 +6,15 @@ import json
 import mysql.connector
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from pipeline_runner import run_pipeline  # Import the pipeline function
+from contextlib import asynccontextmanager
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await run_pipeline()  # This will run ONCE at startup
+    yield
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 
 # Add this after app = FastAPI()
@@ -47,6 +40,16 @@ db_config = {
     "password": "",
     "database": "fd_data"
 }
+
+
+@app.get("/run_pipeline")
+async def trigger_pipeline():
+    try:
+        # Directly await the pipeline coroutine without using asyncio.run()
+        pipeline_result = await run_pipeline()
+        return {"message": pipeline_result}
+    except Exception as e:
+        return {"error": str(e)}
 
 def execute_sql_query(query):
     try:

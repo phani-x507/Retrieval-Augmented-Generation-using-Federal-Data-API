@@ -3,6 +3,7 @@ import aiomysql
 import asyncio
 
 async def update_database():
+    await asyncio.sleep(1)
     with open("processed_data.json", "r") as f:
         records = json.load(f)
 
@@ -22,4 +23,4 @@ async def update_database():
     conn.close()
     print("Database updated successfully.")
 
-asyncio.run(update_database())
+# asyncio.run(update_database())
