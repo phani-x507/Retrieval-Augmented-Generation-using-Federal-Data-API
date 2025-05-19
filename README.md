@@ -5,7 +5,7 @@
 
 This project is developed as part of an assignment for the AI Engineer position at Spiderweb Technologies. 
 It features a **User-Facing Chat-Style RAG Agentic System** utilizing asynchronous Python programming, FastAPI, 
-and a local LLM integrated with a daily-updated MySQL database. 
+and a local LLM integrated with a daily-updated MySQL database from **Federal Register Dataset**. 
 The system efficiently handles both chat-style interactions and database queries.
 
 ## Key Features
@@ -13,7 +13,7 @@ The system efficiently handles both chat-style interactions and database queries
 - **Interactive Chatbot UI**: A ReactJS-based frontend for interacting with the chatbot, located at `Project_root/Frontend/rag_frontend/public`.
 - **Asynchronous Data Pipeline**: Efficient data downloading, processing, and database updates using asyncio.
 - **Chat-Style Interaction**: User-friendly interface for chat interactions using a local LLM model.
-- **Database Access**: Supports structured database queries and retrieves information from the daily-updated MySQL database.
+- **Database Access**: Supports structured database queries and retrieves information from the daily-updated MySQL database which are **Downloaded, Processed, Updated** from **Federal Register Dataset**.
 - **FastAPI Integration**: Offers RESTful API endpoints for interaction.
 - **Modular Code Structure**: Separates data pipeline and API logic for clarity and maintainability.
 
