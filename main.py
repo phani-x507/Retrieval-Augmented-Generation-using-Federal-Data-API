@@ -7,7 +7,7 @@ import mysql.connector
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pipeline_runner import run_pipeline  # Import the pipeline function
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager  # Import asynccontextmanager for lifespan
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
