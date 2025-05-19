@@ -36,6 +36,9 @@ project_root/
 
 ## Installation
 
+### Database Installation
+In order to access the database, make sure to create a MySQL database named `fd_data` and a table named `federal_register`.
+
 ### Backend Setup
 
 1. Clone the repository:
