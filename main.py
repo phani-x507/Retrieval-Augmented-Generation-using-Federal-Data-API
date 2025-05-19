@@ -67,12 +67,15 @@ async def chat(request: QueryRequest):
     system_prompt = """
 You are a data agent. If the user asks for information that requires database access, always respond ONLY with a JSON object in this format:
 {"tool": "fetch_from_db", "arguments": {"query": "<SQL QUERY HERE>"}}
-Do not answer in any other way. Here is an example:
+If the user asks a general or casual question that does NOT require database access, answer normally in plain text.
+Do not answer database questions in any way except the JSON tool call format.
+Here is an example:
 User: Show recent executive orders
 LLM: {"tool": "fetch_from_db", "arguments": {"query": "SELECT title, publication_date FROM federal_register ORDER BY publication_date DESC LIMIT 5"}}
+User: Who is the president of the United States?
+LLM: The current president of the United States is Joe Biden.
 """
     try:
-        # Use system and user roles properly
         response = openai.ChatCompletion.create(
             model="llama2:latest",
             messages=[
@@ -86,29 +89,27 @@ LLM: {"tool": "fetch_from_db", "arguments": {"query": "SELECT title, publication
         import re
         match = re.search(r'\{.*\}', llm_response, re.DOTALL)
         if match:
-            llm_response = match.group(0)
+            json_candidate = match.group(0)
+            try:
+                llm_output = json.loads(json_candidate)
+                if "tool" in llm_output:
+                    tool_name = llm_output["tool"]
+                    arguments = llm_output.get("arguments", {})
+                    normalized_tool = tool_name.replace(" ", "").replace("_", "").lower()
+                    if normalized_tool == "fetchfromdb":
+                        sql_query = arguments.get("query")
+                        if sql_query and "federal_register" in sql_query.lower():
+                            db_result = execute_sql_query(sql_query)
+                            return {"response": db_result}
+                        else:
+                            return {"response": "Sorry, I can only answer questions about the 'federal_register' table."}
+                    else:
+                        return {"response": f"Unknown tool: {tool_name}"}
+            except json.JSONDecodeError:
+                pass  # Not a valid JSON, treat as plain text
 
-        # Try to parse the response to check for tool calls
-        try:
-            llm_output = json.loads(llm_response)
-            if "tool" in llm_output:
-                tool_name = llm_output["tool"]
-                arguments = llm_output.get("arguments", {})
-
-                # Handling the tool call
-            normalized_tool = tool_name.replace(" ", "").replace("_", "").lower()
-            if normalized_tool == "fetchfromdb":
-                sql_query = arguments.get("query")
-                if sql_query:
-                    db_result = execute_sql_query(sql_query)
-                    return {"response": db_result}
-                return {"response": "Error: No query provided."}
-            else:
-                return {"response": f"Unknown tool: {tool_name}"}
-            
-        except json.JSONDecodeError:
-            # Directly return if no tool call found
-            return {"response": llm_response}
+        # If not a tool call, return the LLM's plain text answer
+        return {"response": llm_response.strip()}
 
     except Exception as e:
         return {"response": f"LLM Error: {str(e)}"}
