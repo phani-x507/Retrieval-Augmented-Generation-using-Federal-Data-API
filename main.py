@@ -17,8 +17,24 @@ from fastapi import FastAPI
 import openai
 import json
 import mysql.connector
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
 
 app = FastAPI()
+
+
+# Add this after app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or specify ["http://localhost:3000"] for React dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class QueryRequest(BaseModel):
+    query: str
 
 # LLM Configuration
 openai.api_base = "http://localhost:11434/v1"
@@ -46,7 +62,8 @@ def execute_sql_query(query):
         return f"SQL Error: {str(e)}"
 
 @app.post("/chat")
-async def chat(query: str):
+async def chat(request: QueryRequest):
+    query = request.query
     system_prompt = """
 You are a data agent. If the user asks for information that requires database access, always respond ONLY with a JSON object in this format:
 {"tool": "fetch_from_db", "arguments": {"query": "<SQL QUERY HERE>"}}
