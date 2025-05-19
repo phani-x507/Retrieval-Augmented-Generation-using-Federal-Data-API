@@ -1,6 +1,10 @@
 .App {
   text-align: center;
 }
+.hint_p{
+  font-size: 10px;
+  color: grey;
+}
 
 .App-logo {
   height: 40vmin;

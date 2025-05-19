@@ -38,11 +38,17 @@ function App() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "40px auto", fontFamily: "Arial, sans-serif" }}>
+    <div style={{ maxWidth: "90vh", margin: " auto", fontFamily: "Arial, sans-serif" }}>
       <h2>Federal Data Chatbot</h2>
+      <h5>Ask Something Like:</h5>
+      <p className="hint_p">"Show Recent Executive Records from Federal Registry"</p>
+      <p className="hint_p">"What should i do with the data"</p>
+
+      
       <div
         style={{
-          height: 300,
+          height: 500,
+          width: 800,
           overflowY: "auto",
           border: "1px solid #eee",
           padding: 10,
